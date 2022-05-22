@@ -65,11 +65,11 @@ class _ListViewItemsState extends State<ListViewItems> {
                     title: Row(
                       children: [
                         category.icon,
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text(category.name),
                       ],
                     ),
-                    trailing: Icon(Icons.reorder),
+                    trailing: const Icon(Icons.reorder),
                   ),
                 ),
               )

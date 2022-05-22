@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reminders/models/common/custom_color_collection.dart';
 import 'package:reminders/models/common/custom_icon_collection.dart';
 import 'package:reminders/models/todo_list/todo_list.dart';
 
 import '../../models/common/custom_color.dart';
 import '../../models/common/custom_icon.dart';
+import '../../models/todo_list/todo_list_collection.dart';
 
 class AddListScreen extends StatefulWidget {
   const AddListScreen({Key? key}) : super(key: key);
@@ -44,36 +46,33 @@ class _AddListScreenState extends State<AddListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-        title: const Text(
-          'New List',
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
+        title: Text('New List'),
         actions: [
           TextButton(
-            onPressed: () {
-              if (_textController.text.isNotEmpty) {
-                //print('add to database');
-                Navigator.pop(
-                  context,
-                  TodoList(id: '1', title: _textController.text, icon: {
-                    "id": _selectedIcon.id,
-                    "color": _selectedColor.id
-                  }),
-                );
-              } else {
-                print('Please enter a list name');
-              }
-            },
+            onPressed: _listName.isEmpty
+                ? null
+                : () {
+                    if (_textController.text.isNotEmpty) {
+                      // print('add to database');
+                      Provider.of<TodoListCollection>(context, listen: false)
+                          .addTodoList(TodoList(
+                              id: DateTime.now().toString(),
+                              title: _textController.text,
+                              icon: {
+                            "id": _selectedIcon.id,
+                            "color": _selectedColor.id
+                          }));
+
+                      Navigator.pop(context);
+                    } else {
+                      print('Please enter a list name');
+                    }
+                  },
             child: Text(
               'Add',
               style: TextStyle(
-                color: _listName.isNotEmpty ? Colors.blueAccent : Colors.grey,
-              ),
+                  // color: _listName.isNotEmpty ? null : Colors.grey,
+                  ),
             ),
           )
         ],
