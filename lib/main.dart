@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:reminders/models/todo_list/todo_list_collection.dart';
 import 'package:reminders/screens/add_list/add_list_screen.dart';
@@ -6,13 +7,33 @@ import 'package:reminders/screens/add_reminder/add_reminder_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
     const App(),
   );
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  initializeFirebase() {
+    Firebase.initializeApp()
+        .then(
+          (value) => print(value.name),
+        )
+        .catchError((e) => {print(e.message)});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initializeFirebase();
+  }
 
   @override
   Widget build(BuildContext context) {
