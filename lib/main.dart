@@ -21,12 +21,34 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  initializeFirebase() {
-    Firebase.initializeApp()
-        .then(
-          (value) => print(value.name),
-        )
-        .catchError((e) => {print(e.message)});
+  bool _initialized = false;
+  bool _error = false;
+
+  initializeFirebase() async {
+    try {
+      await Firebase.initializeApp();
+      setState(() {
+        _initialized = true;
+        print('Firebase initialized');
+      });
+    } catch (e) {
+      setState(() {
+        _error = true;
+      });
+    }
+
+    // Firebase.initializeApp().then(
+    //   (value) {
+    //     setState(() {
+    //       _initialized = true;
+    //       //print('Initialized');
+    //     });
+    //   },
+    // ).catchError((e) {
+    //   setState(() {
+    //     _error = true;
+    //   });
+    // });
   }
 
   @override
@@ -37,6 +59,18 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+    if (_error) {
+      return Center(
+        child: Text('There was an error'),
+      );
+    }
+
+    if (!_initialized) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return ChangeNotifierProvider<TodoListCollection>(
       create: (BuildContext context) => TodoListCollection(),
       child: MaterialApp(
