@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:reminders/models/todo_list/todo_list_collection.dart';
 import 'package:reminders/screens/add_list/add_list_screen.dart';
+import 'package:reminders/screens/auth/authenticate_screen.dart';
 import 'package:reminders/screens/home/home_screen.dart';
 import 'package:reminders/screens/add_reminder/add_reminder_screen.dart';
 import 'package:provider/provider.dart';
@@ -41,7 +42,8 @@ class _AppState extends State<App> {
               debugShowCheckedModeBanner: false,
               initialRoute: '/',
               routes: {
-                '/': (context) => HomeScreen(),
+                '/': (context) => AuthenticateScreen(),
+                '/home': (context) => HomeScreen(),
                 '/addList': (context) => const AddListScreen(),
                 '/addReminder': (context) => const AddReminderScreen(),
               },
