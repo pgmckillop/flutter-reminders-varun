@@ -95,12 +95,12 @@ class _SignInScreenState extends State<SignInScreen> {
                                   password: _passwordController.text);
                           if (user != null) {
                             // Navigate to home screen
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomeScreen(),
-                              ),
-                            );
+                            // Navigator.pushReplacement(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => HomeScreen(),
+                            //   ),
+                            // );
                           }
                         }
                       },

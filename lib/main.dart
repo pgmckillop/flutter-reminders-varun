@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:reminders/models/todo_list/todo_list_collection.dart';
@@ -6,6 +7,7 @@ import 'package:reminders/screens/auth/authenticate_screen.dart';
 import 'package:reminders/screens/home/home_screen.dart';
 import 'package:reminders/screens/add_reminder/add_reminder_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:reminders/screens/wrapper.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,58 +38,14 @@ class _AppState extends State<App> {
         }
 
         if (snapshot.connectionState == ConnectionState.done) {
-          return ChangeNotifierProvider<TodoListCollection>(
-            create: (BuildContext context) => TodoListCollection(),
-            child: MaterialApp(
-              debugShowCheckedModeBanner: false,
-              initialRoute: '/',
-              routes: {
-                '/': (context) => AuthenticateScreen(),
-                '/home': (context) => HomeScreen(),
-                '/addList': (context) => const AddListScreen(),
-                '/addReminder': (context) => const AddReminderScreen(),
-              },
-              theme: ThemeData(
-                brightness: Brightness.dark,
-                scaffoldBackgroundColor: Colors.black,
-                appBarTheme: const AppBarTheme(
-                  color: Colors.black,
-                  toolbarTextStyle: TextStyle(
-                    color: Colors.white,
-                  ),
-                  titleTextStyle: TextStyle(
-                    color: Colors.white,
-                  ),
-                  iconTheme: IconThemeData(
-                    color: Colors.white,
-                  ),
-                ),
-                iconTheme: const IconThemeData(color: Colors.white),
-                textButtonTheme: TextButtonThemeData(
-                  style: TextButton.styleFrom(
-                    primary: Colors.blueAccent,
-                    textStyle: const TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                elevatedButtonTheme: ElevatedButtonThemeData(
-                  style: ElevatedButton.styleFrom(
-                    shape: const StadiumBorder(),
-                  ),
-                ),
-                dividerColor: Colors.grey[600],
-                colorScheme: ColorScheme.fromSwatch().copyWith(
-                  brightness: Brightness.dark,
-                  secondary: Colors.white,
-                ),
-              ),
-            ),
+          return StreamProvider<User?>.value(
+            value: FirebaseAuth.instance.authStateChanges(),
+            initialData: FirebaseAuth.instance.currentUser,
+            child: const Wrapper(),
           );
         }
 
-        return CircularProgressIndicator();
+        return const CircularProgressIndicator();
       },
     );
   }
