@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:reminders/main.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -33,15 +34,16 @@ class _SignInScreenState extends State<SignInScreen> {
               widget.toggleView();
             },
             icon: Icon(Icons.person),
-            label: const Text('Sign In'),
+            label: const Text('Sign Up'),
           )
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(
-              height: 200.0,
+            Lottie.asset(
+              'assets/images/calendar.json',
+              width: 175.0,
             ),
             Text(
               'Yet Another ToDo List',
@@ -52,6 +54,7 @@ class _SignInScreenState extends State<SignInScreen> {
               child: Form(
                 key: _formKey,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(
                       height: 20.0,

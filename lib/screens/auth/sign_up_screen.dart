@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class SignUpScreen extends StatefulWidget {
   final VoidCallback toggleView;
@@ -31,16 +32,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
             onPressed: () {
               widget.toggleView();
             },
-            icon: const Icon(Icons.person),
-            label: const Text('Sign up'),
+            icon: Icon(Icons.person),
+            label: const Text('Sign In'),
           )
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(
-              height: 200.0,
+            Lottie.asset(
+              'assets/images/calendar.json',
+              width: 175.0,
             ),
             Text(
               'Yet Another ToDo List',
@@ -51,6 +53,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: Form(
                 key: _formKey,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(
                       height: 20.0,
