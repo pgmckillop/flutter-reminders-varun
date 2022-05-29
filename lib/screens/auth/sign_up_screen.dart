@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+
+import '../../services/auth_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   final VoidCallback toggleView;
@@ -75,17 +78,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       decoration:
                           const InputDecoration(hintText: 'Enter Password'),
                       obscureText: true,
-                      validator: (val) => val!.length < 6
-                          ? 'Enter a password of at least 6 characters'
-                          : null,
+                      // validator: (val) => val!.length < 6
+                      //     ? 'Enter a password of at least 6 characters'
+                      //     : null,
                     ),
                     const SizedBox(
                       height: 20.0,
                     ),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          print('Submit form');
+                          final user = await AuthService()
+                              .createUserWithEmailAndPassword(
+                                  email: _emailController.text,
+                                  password: _passwordController.text);
+                          if (user != null) {}
                         }
                       },
                       child: const Text('Sign Up'),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:reminders/main.dart';
+import 'package:reminders/screens/home/home_screen.dart';
+
+import '../../services/auth_service.dart';
 
 class SignInScreen extends StatefulWidget {
   final VoidCallback toggleView;
@@ -84,9 +87,21 @@ class _SignInScreenState extends State<SignInScreen> {
                       height: 20.0,
                     ),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          print('Submit form');
+                          final user = await AuthService()
+                              .signInWithEmailAndPassword(
+                                  email: _emailController.text,
+                                  password: _passwordController.text);
+                          if (user != null) {
+                            // Navigate to home screen
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HomeScreen(),
+                              ),
+                            );
+                          }
                         }
                       },
                       child: const Text('Sign In'),
