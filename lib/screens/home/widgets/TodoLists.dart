@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reminders/models/todo_list/todo_list.dart';
@@ -11,6 +13,7 @@ class TodoLists extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final todoLists = Provider.of<List<TodoList>>(context);
+    final user = Provider.of<User?>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
@@ -37,11 +40,22 @@ class TodoLists extends StatelessWidget {
                 itemCount: todoLists.length,
                 itemBuilder: (context, index) {
                   return Dismissible(
-                    onDismissed: (direction) {
+                    onDismissed: (direction) async {
                       // Delete the todo
                       //deleteTodoList(todoLists[index]);
-                      Provider.of<TodoListCollection>(context, listen: false)
-                          .removeTodoList(todoLists[index]);
+                      // Provider.of<TodoListCollection>(context, listen: false)
+                      //     .removeTodoList(todoLists[index]);
+                      final todoListRef = FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user?.uid)
+                          .collection('todo_lists')
+                          .doc(todoLists[index].id);
+                      try {
+                        await todoListRef.delete();
+                        print('Deleted');
+                      } catch (e) {
+                        print(e);
+                      }
                     },
                     direction: DismissDirection.endToStart,
                     key: UniqueKey(),
