@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reminders/models/todo_list/todo_list.dart';
 import 'package:reminders/models/todo_list/todo_list_collection.dart';
 
 import '../../../common/widgets/category_icon.dart';
@@ -9,7 +10,7 @@ import '../../../models/common/custom_icon_collection.dart';
 class TodoLists extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final todoLists = Provider.of<TodoListCollection>(context).todoLists;
+    final todoLists = Provider.of<List<TodoList>>(context);
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(

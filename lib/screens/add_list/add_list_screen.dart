@@ -1,12 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reminders/models/common/custom_color_collection.dart';
 import 'package:reminders/models/common/custom_icon_collection.dart';
-import 'package:reminders/models/todo_list/todo_list.dart';
-
 import '../../models/common/custom_color.dart';
 import '../../models/common/custom_icon.dart';
-import '../../models/todo_list/todo_list_collection.dart';
+import '../../models/todo_list/todo_list.dart';
 
 class AddListScreen extends StatefulWidget {
   const AddListScreen({Key? key}) : super(key: key);
@@ -51,24 +51,52 @@ class _AddListScreenState extends State<AddListScreen> {
           TextButton(
             onPressed: _listName.isEmpty
                 ? null
-                : () {
+                : () async {
                     if (_textController.text.isNotEmpty) {
-                      // print('add to database');
-                      Provider.of<TodoListCollection>(context, listen: false)
-                          .addTodoList(TodoList(
-                              id: DateTime.now().toString(),
-                              title: _textController.text,
-                              icon: {
+                      // Get the current user
+                      final user = Provider.of<User?>(context, listen: false);
+                      // location of todo list in Firebase-Firestore
+                      final todoListRef = FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user?.uid)
+                          .collection('todo_lists')
+                          .doc();
+
+                      final newTodoList = TodoList(
+                          id: todoListRef.id,
+                          title: _textController.text,
+                          icon: {
                             "id": _selectedIcon.id,
-                            "color": _selectedColor.id
-                          }));
+                            "color": _selectedColor.id,
+                          },
+                          reminderCount: 0);
+
+                      // set the data in Firebase
+                      try {
+                        await todoListRef.set(
+                          newTodoList.toJson(),
+                        );
+                        print('List added');
+                      } catch (e) {
+                        print(e);
+                      }
+
+                      // print('add to database');
+                      // Provider.of<TodoListCollection>(context, listen: false)
+                      //     .addTodoList(TodoList(
+                      //         id: DateTime.now().toString(),
+                      //         title: _textController.text,
+                      //         icon: {
+                      //       "id": _selectedIcon.id,
+                      //       "color": _selectedColor.id
+                      //     }));
 
                       Navigator.pop(context);
                     } else {
                       print('Please enter a list name');
                     }
                   },
-            child: Text(
+            child: const Text(
               'Add',
               style: TextStyle(
                   // color: _listName.isNotEmpty ? null : Colors.grey,
