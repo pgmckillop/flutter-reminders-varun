@@ -12,14 +12,14 @@ class AddListScreen extends StatefulWidget {
   const AddListScreen({Key? key}) : super(key: key);
 
   @override
-  State<AddListScreen> createState() => _AddListScreenState();
+  _AddListScreenState createState() => _AddListScreenState();
 }
 
 class _AddListScreenState extends State<AddListScreen> {
   CustomColor _selectedColor = CustomColorCollection().colors.first;
   CustomIcon _selectedIcon = CustomIconCollection().icons.first;
 
-  TextEditingController _textController = TextEditingController();
+  final TextEditingController _textController = TextEditingController();
 
   String _listName = '';
 
@@ -46,37 +46,38 @@ class _AddListScreenState extends State<AddListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('New List'),
+        title: const Text('New List'),
         actions: [
           TextButton(
             onPressed: _listName.isEmpty
                 ? null
                 : () async {
                     if (_textController.text.isNotEmpty) {
-                      // Get the current user
                       final user = Provider.of<User?>(context, listen: false);
-                      // location of todo list in Firebase-Firestore
+
+                      //location of the todolist in our firestore database
+
                       final todoListRef = FirebaseFirestore.instance
                           .collection('users')
                           .doc(user?.uid)
                           .collection('todo_lists')
-                          .doc();
+                          .doc(); //id of the list
 
                       final newTodoList = TodoList(
                           id: todoListRef.id,
                           title: _textController.text,
                           icon: {
                             "id": _selectedIcon.id,
-                            "color": _selectedColor.id,
+                            "color": _selectedColor.id
                           },
                           reminderCount: 0);
 
-                      // set the data in Firebase
+                      //set the data in firebase
                       try {
                         await todoListRef.set(
                           newTodoList.toJson(),
                         );
-                        print('List added');
+                        debugPrint('list added');
                       } catch (e) {
                         print(e);
                       }
@@ -106,7 +107,7 @@ class _AddListScreenState extends State<AddListScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

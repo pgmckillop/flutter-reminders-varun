@@ -11,16 +11,12 @@ import 'auth/authenticate_screen.dart';
 import 'home/home_screen.dart';
 
 class Wrapper extends StatelessWidget {
-  const Wrapper({
-    Key? key,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User?>(context);
     final todoListStream = FirebaseFirestore.instance
         .collection('users')
-        .doc(user!.uid)
+        .doc(user?.uid)
         .collection('todo_lists')
         .snapshots()
         .map((snapshot) => snapshot.docs
@@ -38,48 +34,30 @@ class Wrapper extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         // initialRoute: '/',
         routes: {
-          // '/': (context) => const AuthenticateScreen(),
-          '/home': (context) => HomeScreen(),
-          '/addList': (context) => const AddListScreen(),
-          '/addReminder': (context) => const AddReminderScreen(),
+          // '/': (context) => AuthenticateScreen(),
+          'home': (context) => const HomeScreen(),
+          'addList': (context) => const AddListScreen(),
+          'addReminder': (context) => const AddReminderScreen()
         },
-        home: user != null ? HomeScreen() : AuthenticateScreen(),
+        home: user != null ? const HomeScreen() : const AuthenticateScreen(),
         theme: ThemeData(
-          brightness: Brightness.dark,
-          scaffoldBackgroundColor: Colors.black,
-          appBarTheme: const AppBarTheme(
-            color: Colors.black,
-            toolbarTextStyle: TextStyle(
-              color: Colors.white,
-            ),
-            titleTextStyle: TextStyle(
-              color: Colors.white,
-            ),
-            iconTheme: IconThemeData(
-              color: Colors.white,
-            ),
-          ),
-          iconTheme: const IconThemeData(color: Colors.white),
-          textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(
-              primary: Colors.blueAccent,
-              textStyle: const TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
+            brightness: Brightness.dark,
+            scaffoldBackgroundColor: Colors.black,
+            appBarTheme: const AppBarTheme(backgroundColor: Colors.black),
+            iconTheme: const IconThemeData(color: Colors.white),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                primary: Colors.blueAccent,
+                textStyle:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
             ),
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              shape: const StadiumBorder(),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                shape: const StadiumBorder(),
+              ),
             ),
-          ),
-          dividerColor: Colors.grey[600],
-          colorScheme: ColorScheme.fromSwatch().copyWith(
-            brightness: Brightness.dark,
-            secondary: Colors.white,
-          ),
-        ),
+            dividerColor: Colors.grey[600]),
       ),
     );
   }

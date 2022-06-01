@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:reminders/models/todo_list/todo_list.dart';
 
 class TodoListCollection with ChangeNotifier {
-  List<TodoList> _todoLists = [];
+  final List<TodoList> _todoLists = [];
 
   UnmodifiableListView<TodoList> get todoLists =>
       UnmodifiableListView(_todoLists);

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:reminders/main.dart';
-import 'package:reminders/screens/home/home_screen.dart';
-
 import '../../services/auth_service.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -36,7 +33,7 @@ class _SignInScreenState extends State<SignInScreen> {
             onPressed: () {
               widget.toggleView();
             },
-            icon: Icon(Icons.person),
+            icon: const Icon(Icons.person),
             label: const Text('Sign Up'),
           )
         ],

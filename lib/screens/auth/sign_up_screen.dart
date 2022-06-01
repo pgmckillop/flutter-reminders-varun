@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -35,7 +34,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             onPressed: () {
               widget.toggleView();
             },
-            icon: Icon(Icons.person),
+            icon: const Icon(Icons.person),
             label: const Text('Sign In'),
           )
         ],
