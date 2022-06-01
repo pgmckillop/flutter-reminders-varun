@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reminders/common/widgets/category_icon.dart';
 import 'package:reminders/models/todo_list/todo_list.dart';
+import 'package:reminders/screens/add_reminder/select_reminder_category_screen.dart';
 import 'package:reminders/screens/add_reminder/select_reminder_list_screen.dart';
+import '../../models/category/category.dart';
+import '../../models/category/category_collection.dart';
 
 class AddReminderScreen extends StatefulWidget {
   const AddReminderScreen({Key? key}) : super(key: key);
@@ -21,6 +24,7 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
   // PULL IN ALL THE LISTS FROM THE PROVIDER
   // PASS DATA DOWN TO SEELCT LIST SCREEN
   TodoList? _selectedList;
+  Category _selectedCategory = CategoryCollection().categories[0];
 
   @override
   void initState() {
@@ -37,6 +41,12 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
   _updateSelectedList(TodoList todoList) {
     setState(() {
       _selectedList = todoList;
+    });
+  }
+
+  _updateSelectedCategory(Category category) {
+    setState(() {
+      _selectedCategory = category;
     });
   }
 
@@ -163,20 +173,31 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
                 elevation: 0,
                 margin: EdgeInsets.zero,
                 child: ListTile(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SelectReminderCategoryScreen(
+                          selectedCategory: _selectedCategory,
+                          selectedCategoryCallback: _updateSelectedCategory,
+                        ),
+                        fullscreenDialog: true,
+                      ),
+                    );
+                  },
                   leading: Text(
                     'Category',
                     style: Theme.of(context).textTheme.headline6,
                   ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: const [
+                    children: [
                       CategoryIcon(
-                          bgColor: Colors.blueAccent,
-                          iconData: Icons.calendar_today),
-                      SizedBox(width: 10),
-                      Text('Scheduled'),
-                      Icon(Icons.arrow_forward_ios)
+                          bgColor: _selectedCategory.icon.bgColor,
+                          iconData: _selectedCategory.icon.iconData),
+                      const SizedBox(width: 10),
+                      Text(_selectedCategory.name),
+                      const Icon(Icons.arrow_forward_ios)
                     ],
                   ),
                 ),
