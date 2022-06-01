@@ -6,6 +6,7 @@ import 'package:reminders/models/todo_list/todo_list.dart';
 import '../../../common/widgets/category_icon.dart';
 import '../../../models/common/custom_color_collection.dart';
 import '../../../models/common/custom_icon_collection.dart';
+import '../../view_list/view_list_screen.dart';
 
 class TodoLists extends StatelessWidget {
   const TodoLists({Key? key}) : super(key: key);
@@ -73,6 +74,17 @@ class TodoLists extends StatelessWidget {
                       elevation: 0,
                       margin: EdgeInsets.zero,
                       child: ListTile(
+                        onTap: todoLists[index].reminderCount > 0
+                            ? () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ViewListScreen(
+                                        todoList: todoLists[index]),
+                                  ),
+                                );
+                              }
+                            : null,
                         leading: CategoryIcon(
                             bgColor: (CustomColorCollection()
                                 .findColorById(todoLists[index].icon['color'])
