@@ -51,6 +51,7 @@ class Wrapper extends StatelessWidget {
             value: remindersStream, initialData: [])
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         // initialRoute: '/',
         routes: {
           // '/': (context) => AuthenticateScreen(),

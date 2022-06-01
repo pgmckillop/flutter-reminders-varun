@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:reminders/models/category/category.dart';
 
 import '../../../models/reminder/reminder.dart';
+import '../../view_list/view_list_by_category_screen.dart';
 
 class GridViewItems extends StatelessWidget {
   const GridViewItems({
@@ -13,7 +14,7 @@ class GridViewItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final allreminders = Provider.of<List<Reminder>>(context);
+    final allReminders = Provider.of<List<Reminder>>(context);
     return GridView.count(
       shrinkWrap: true,
       crossAxisCount: 2,
@@ -23,35 +24,50 @@ class GridViewItems extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       children: categories
           .map(
-            (category) => Container(
-              decoration: BoxDecoration(
-                //color: Colors.black,
-                color: const Color(0xFF1A191D),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        category.icon,
-                        Text(
-                          getCategoryCount(
-                                  id: category.id, allReminders: allreminders)
-                              .toString(),
-                          style: Theme.of(context).textTheme.headline6,
+            (category) => InkWell(
+              onTap: getCategoryCount(
+                          id: category.id, allReminders: allReminders) >
+                      0
+                  ? () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ViewListByCategoryScreen(category: category),
                         ),
-                      ],
-                    ),
-                    Text(
-                      category.name,
-                      style: Theme.of(context).textTheme.headline5,
-                    ),
-                  ],
+                      );
+                    }
+                  : null,
+              child: Ink(
+                decoration: BoxDecoration(
+                  //color: Colors.black,
+                  color: const Color(0xFF1A191D),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          category.icon,
+                          Text(
+                            getCategoryCount(
+                                    id: category.id, allReminders: allReminders)
+                                .toString(),
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                        ],
+                      ),
+                      Text(
+                        category.name,
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
