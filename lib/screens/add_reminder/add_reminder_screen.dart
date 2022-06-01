@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:reminders/common/widgets/category_icon.dart';
 import 'package:reminders/models/todo_list/todo_list.dart';
@@ -25,6 +28,8 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
   // PASS DATA DOWN TO SEELCT LIST SCREEN
   TodoList? _selectedList;
   Category _selectedCategory = CategoryCollection().categories[0];
+  DateTime? _selectedDate;
+  TimeOfDay? _selectedTime;
 
   @override
   void initState() {
@@ -61,6 +66,7 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
   @override
   Widget build(BuildContext context) {
     final _todoLists = Provider.of<List<TodoList>>(context);
+    final user = Provider.of<User?>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -197,6 +203,107 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
                           iconData: _selectedCategory.icon.iconData),
                       const SizedBox(width: 10),
                       Text(_selectedCategory.name),
+                      const Icon(Icons.arrow_forward_ios)
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Card(
+                elevation: 0,
+                margin: EdgeInsets.zero,
+                child: ListTile(
+                  onTap: () async {
+                    final DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime.now().add(
+                        Duration(days: 730),
+                      ),
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => SelectReminderCategoryScreen(
+                      //       selectedCategory: _selectedCategory,
+                      //       selectedCategoryCallback: _updateSelectedCategory,
+                      //     ),
+                      //     fullscreenDialog: true,
+                      //   ),
+                    );
+                    if (pickedDate != null) {
+                      print(pickedDate);
+                      setState(() {
+                        _selectedDate = pickedDate;
+                      });
+                    } else {
+                      print('no date was picked');
+                    }
+                  },
+                  leading: Text(
+                    'Date',
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CategoryIcon(
+                          bgColor: Colors.red.shade300,
+                          iconData: CupertinoIcons.calendar_badge_plus),
+                      const SizedBox(width: 10),
+                      Text(_selectedDate != null
+                          ? DateFormat.yMMMd().format(_selectedDate!).toString()
+                          : 'Select Date'),
+                      const Icon(Icons.arrow_forward_ios)
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Card(
+                elevation: 0,
+                margin: EdgeInsets.zero,
+                child: ListTile(
+                  onTap: () async {
+                    final TimeOfDay? pickedTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.now(),
+                    );
+                    if (pickedTime != null) {
+                      print(pickedTime);
+                      setState(() {
+                        _selectedTime = pickedTime;
+                      });
+                    } else {
+                      print('No time was picked');
+                    }
+                  },
+                  leading: Text(
+                    'Due Time',
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CategoryIcon(
+                          bgColor: Colors.red.shade300,
+                          iconData: CupertinoIcons.time),
+                      const SizedBox(width: 10),
+                      Text(_selectedTime != null
+                          ? _selectedTime!.format(context).toString()
+                          : 'Select Time'),
                       const Icon(Icons.arrow_forward_ios)
                     ],
                   ),
