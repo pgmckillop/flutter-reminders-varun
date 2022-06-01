@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reminders/models/category/category.dart';
+
+import '../../../models/reminder/reminder.dart';
 
 class GridViewItems extends StatelessWidget {
   const GridViewItems({
@@ -10,6 +13,7 @@ class GridViewItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final allreminders = Provider.of<List<Reminder>>(context);
     return GridView.count(
       shrinkWrap: true,
       crossAxisCount: 2,
@@ -36,7 +40,9 @@ class GridViewItems extends StatelessWidget {
                       children: [
                         category.icon,
                         Text(
-                          '0',
+                          getCategoryCount(
+                                  id: category.id, allReminders: allreminders)
+                              .toString(),
                           style: Theme.of(context).textTheme.headline6,
                         ),
                       ],
@@ -52,5 +58,20 @@ class GridViewItems extends StatelessWidget {
           )
           .toList(),
     );
+  }
+
+  int getCategoryCount({required id, List<Reminder>? allReminders}) {
+    if (id == 'all' && allReminders != null) {
+      return allReminders.length;
+    }
+
+    final categories =
+        allReminders?.where((reminder) => reminder.categoryId == id);
+
+    if (categories != null) {
+      return categories.length;
+    }
+
+    return 0;
   }
 }
