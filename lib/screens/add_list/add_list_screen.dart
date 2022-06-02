@@ -7,6 +7,7 @@ import 'package:reminders/models/common/custom_icon_collection.dart';
 import '../../models/common/custom_color.dart';
 import '../../models/common/custom_icon.dart';
 import '../../models/todo_list/todo_list.dart';
+import '../../services/database_service.dart';
 
 class AddListScreen extends StatefulWidget {
   const AddListScreen({Key? key}) : super(key: key);
@@ -64,7 +65,7 @@ class _AddListScreenState extends State<AddListScreen> {
                           .doc(); //id of the list
 
                       final newTodoList = TodoList(
-                          id: todoListRef.id,
+                          id: null,
                           title: _textController.text,
                           icon: {
                             "id": _selectedIcon.id,
@@ -73,13 +74,12 @@ class _AddListScreenState extends State<AddListScreen> {
                           reminderCount: 0);
 
                       //set the data in firebase
+
                       try {
-                        await todoListRef.set(
-                          newTodoList.toJson(),
-                        );
-                        debugPrint('list added');
+                        DatabaseService(uid: user!.uid)
+                            .addTodoList(todoList: newTodoList);
                       } catch (e) {
-                        print(e);
+                        //show the error
                       }
 
                       // print('add to database');
