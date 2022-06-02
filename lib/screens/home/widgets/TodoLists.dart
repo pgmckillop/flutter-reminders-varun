@@ -8,6 +8,8 @@ import '../../../common/widgets/dismissible_background.dart';
 import '../../../models/common/custom_color_collection.dart';
 import '../../../models/common/custom_icon_collection.dart';
 import '../../view_list/view_list_screen.dart';
+import '../../../services/database_service.dart';
+import '../../../common/helpers/helpers.dart' as helpers;
 
 class TodoLists extends StatelessWidget {
   const TodoLists({Key? key}) : super(key: key);
@@ -47,32 +49,13 @@ class TodoLists extends StatelessWidget {
                       // Provider.of<TodoListCollection>(context, listen: false)
                       //     .removeTodoList(todoLists[index]);
 
-                      WriteBatch batch = FirebaseFirestore.instance.batch();
-
-                      final todoListRef = FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(user?.uid)
-                          .collection('todo_lists')
-                          .doc(todoLists[index].id);
-
-                      final reminderSnapshots = await FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(user?.uid)
-                          .collection('reminders')
-                          .where('list.id', isEqualTo: todoLists[index].id)
-                          .get();
-
-                      reminderSnapshots.docs.forEach((reminder) {
-                        batch.delete(reminder.reference);
-                      });
-
-                      batch.delete(todoListRef);
-
                       try {
-                        await batch.commit();
-                        print('Deleted');
+                        await DatabaseService(uid: user!.uid)
+                            .deleteTodoList(todoLists[index]);
+                        helpers.showSnackBar(context, 'List deleted');
                       } catch (e) {
-                        print(e);
+                        //show the error.
+                        helpers.showSnackBar(context, 'Unable to delete List');
                       }
                     },
                     direction: DismissDirection.endToStart,

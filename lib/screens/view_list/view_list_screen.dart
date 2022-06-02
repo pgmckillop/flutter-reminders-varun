@@ -6,6 +6,7 @@ import '../../common/helpers/helpers.dart' as helpers;
 import '../../models/reminder/reminder.dart';
 import '../../models/todo_list/todo_list.dart';
 import '../../../common/widgets/dismissible_background.dart';
+import '../../services/database_service.dart';
 
 class ViewListScreen extends StatelessWidget {
   final TodoList todoList;
@@ -29,32 +30,17 @@ class ViewListScreen extends StatelessWidget {
             return Dismissible(
               key: UniqueKey(),
               direction: DismissDirection.endToStart,
-              background: DismissibleBackground(),
+              background: const DismissibleBackground(),
               onDismissed: (direction) async {
                 final user = Provider.of<User?>(context, listen: false);
 
-                WriteBatch batch = FirebaseFirestore.instance.batch();
-
-                final remindersref = FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(user?.uid)
-                    .collection('reminders')
-                    .doc(reminder.id);
-
-                final listRef = FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(user?.uid)
-                    .collection('todo_lists')
-                    .doc(reminder.list['id']);
-
-                batch.delete(remindersref);
-                batch.update(
-                    listRef, {'reminder_count': todoList.reminderCount - 1});
-
                 try {
-                  await batch.commit();
+                  DatabaseService(uid: user!.uid)
+                      .deleteReminder(reminder, todoList);
+                  helpers.showSnackBar(context, 'Reminder Deleted');
                 } catch (e) {
-                  print(e);
+                  //show the error
+                  helpers.showSnackBar(context, 'Unable To delete reminder');
                 }
               },
               child: Card(

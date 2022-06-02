@@ -2,12 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reminders/common/helpers/helpers.dart';
 import 'package:reminders/models/common/custom_color_collection.dart';
 import 'package:reminders/models/common/custom_icon_collection.dart';
 import '../../models/common/custom_color.dart';
 import '../../models/common/custom_icon.dart';
 import '../../models/todo_list/todo_list.dart';
 import '../../services/database_service.dart';
+import '../../common/helpers/helpers.dart' as helpers;
 
 class AddListScreen extends StatefulWidget {
   const AddListScreen({Key? key}) : super(key: key);
@@ -78,8 +80,10 @@ class _AddListScreenState extends State<AddListScreen> {
                       try {
                         DatabaseService(uid: user!.uid)
                             .addTodoList(todoList: newTodoList);
+                        helpers.showSnackBar(context, 'List Added');
                       } catch (e) {
                         //show the error
+                        helpers.showSnackBar(context, 'Unable to add list');
                       }
 
                       // print('add to database');
