@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
+import '../../common/helpers/helpers.dart' as helpers;
 import '../../models/category/category.dart';
 import '../../models/reminder/reminder.dart';
 
@@ -28,6 +29,22 @@ class ViewListByCategoryScreen extends StatelessWidget {
             return Card(
               child: ListTile(
                 title: Text(reminder.title),
+                subtitle: reminder.notes != null ? Text(reminder.notes!) : null,
+                trailing: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      helpers.formatDate(reminder.dueDate),
+                    ),
+                    Text(
+                      helpers.formatTime(
+                        context,
+                        reminder.dueTime['hour'],
+                        reminder.dueTime['minute'],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           }),
