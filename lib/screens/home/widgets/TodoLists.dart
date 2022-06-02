@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reminders/models/todo_list/todo_list.dart';
 import '../../../common/widgets/category_icon.dart';
+import '../../../common/widgets/dismissible_background.dart';
 import '../../../models/common/custom_color_collection.dart';
 import '../../../models/common/custom_icon_collection.dart';
 import '../../view_list/view_list_screen.dart';
@@ -45,13 +46,30 @@ class TodoLists extends StatelessWidget {
                       // deleteTodoList(todoLists[index]);
                       // Provider.of<TodoListCollection>(context, listen: false)
                       //     .removeTodoList(todoLists[index]);
+
+                      WriteBatch batch = FirebaseFirestore.instance.batch();
+
                       final todoListRef = FirebaseFirestore.instance
                           .collection('users')
-                          .doc(user!.uid)
+                          .doc(user?.uid)
                           .collection('todo_lists')
                           .doc(todoLists[index].id);
+
+                      final reminderSnapshots = await FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user?.uid)
+                          .collection('reminders')
+                          .where('list.id', isEqualTo: todoLists[index].id)
+                          .get();
+
+                      reminderSnapshots.docs.forEach((reminder) {
+                        batch.delete(reminder.reference);
+                      });
+
+                      batch.delete(todoListRef);
+
                       try {
-                        await todoListRef.delete();
+                        await batch.commit();
                         print('Deleted');
                       } catch (e) {
                         print(e);
@@ -59,14 +77,7 @@ class TodoLists extends StatelessWidget {
                     },
                     direction: DismissDirection.endToStart,
                     key: UniqueKey(),
-                    background: Container(
-                      alignment: AlignmentDirectional.centerEnd,
-                      color: Colors.red,
-                      child: const Padding(
-                        padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
-                        child: Icon(Icons.delete),
-                      ),
-                    ),
+                    background: DismissibleBackground(),
                     child: Card(
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero,
